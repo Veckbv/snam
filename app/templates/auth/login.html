@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Логин{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Логин</h1>
+</div>
+<div class="col-md-4">
+    {{ wtf.quick_form(form) }}
+    <br>
+    <p>Забыли пароль? <a href="{{ url_for('auth.password_reset_request') }}">Нажмите здесь, чтобы cбросить пароль</a>.</p>
+    <p>Новый пользователь <a href="{{ url_for('auth.register') }}">Нажмите здесь, чтобы зарегистрироваться</a>.</p>
+</div>
+{% endblock %}

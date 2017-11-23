@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+
+{% block page_content %}
+    <div class="text-center">
+        {{macros.pagination_widget(pagination, '.uploaded' )}}
+    </div>
+    {% for i in images %}
+        <dir>
+            <a href="{{ url_for('.uploaded', page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" class="img-responsive center-block img-rounded"></a>
+        </dir>
+    {% endfor %}
+    {{images[0].path}}
+{{pagination.next_num}}
+{% endblock %}
