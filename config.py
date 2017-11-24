@@ -7,14 +7,13 @@ class Config:
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
 	UPLOAD_FOLDER = '/home/ali/myapps/snam/app/static'
 	'''ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])'''
-	MAIL_HOSTNAME = 'localhost'
-	MAIL_SERVER = os.environ.get('MAIL_SERVER', 'stmp.gmail.com')
-	MAIL_PORT = int(os.environ.get('MAIL_PORT', '587'))
-	MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', 'on', 1]
-	MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'kartoev.ali@gmail.com'
-	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'Veckbv3888870'
+	MAIL_SERVER = 'smtp.gmail.com'
+	MAIL_PORT = 587
+	MAIL_USE_TLS = True
+	MAIL_USERNAME = 'kartoev.ali@gmail.com'
+	MAIL_PASSWORD = 'Veckbv3888870'
 	SNAM_MAIL_SENDER = 'Snam Admin <snam@example.com>'
-	SNAM_ADMIN = os.environ.get('FLASKY_ADMIN') or 'kartoev.ali@gmail.com'
+	SNAM_ADMIN = os.environ.get('SNAM_ADMIN') or 'kartoev.ali@gmail.com'
 	
 
 

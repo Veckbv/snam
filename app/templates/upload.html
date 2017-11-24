@@ -4,6 +4,7 @@
 {% block page_content %}
 <form method="POST" enctype="multipart/form-data">
     {{form.hidden_tag()}}
+    {{form.name}}
     {{form.image(multiple="")}}
     {{form.submit()}}
 </form>
