@@ -31,7 +31,7 @@ def edit_profile():
         current_user.about_me = form.about_me.data
         db.session.add(current_user._get_current_object())
         db.session.commit()
-        flash('Your profile has been updated.')
+        flash('Профиль был обновлен.')
         return redirect(url_for('.user', username=current_user.username))
     form.name.data = current_user.name
     form.location.data = current_user.location
@@ -54,7 +54,7 @@ def edit_profile_admin(id):
         user.about_me = form.about_me.data
         db.session.add(user)
         db.session.commit()
-        flash('The profile has been updated.')
+        flash('Профиль был обновлен.')
         return redirect(url_for('.user', username=user.username))
     form.email.data = user.email
     form.username.data = user.username
@@ -66,10 +66,11 @@ def edit_profile_admin(id):
     return render_template('edit_profile.html', form=form, user=user)
 
 @main.route('/upload',methods=['GET','POST'])
+@login_required
 def upload():
     form = ImageForm()
     if form.validate_on_submit():
-        uploaded_files = request.files.getlist("image")
+        uploaded_files = request.files.getlist("upload")
         path_to_folder = os.path.join(current_app.root_path, 'static/images', form.name.data)
         os.mkdir(path_to_folder)
         for f in uploaded_files:

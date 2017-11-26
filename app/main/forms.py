@@ -1,14 +1,15 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, TextAreaField, SelectField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from ..models import User, Role
 from wtforms import ValidationError
 
 
+
 class ImageForm(FlaskForm):
     name = StringField('Название', validators=[DataRequired()])
-    image = FileField(validators=[FileRequired()])
+    upload = FileField('Изображение', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Только изображение!')])
     submit = SubmitField('Отправить')
     
 
