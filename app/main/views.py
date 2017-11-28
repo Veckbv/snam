@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from . import main
 from .forms import ImageForm, EditProfileForm ,EditProfileAdminForm
-from ..models import User, Role, Image
+from ..models import User, Role, Comics
 from .. import db
 from ..decorators import admin_required
 
@@ -73,17 +73,18 @@ def upload():
         uploaded_files = request.files.getlist("upload")
         path_to_folder = os.path.join(current_app.root_path, 'static/images', form.name.data)
         os.mkdir(path_to_folder)
+        path_to_images = []
         for f in uploaded_files:
             filename = secure_filename(f.filename)
             f.save(os.path.join(path_to_folder, filename))
-            path = Image(path=os.path.join('images', form.name.data, filename))
-            db.session.add(path)
-            db.session.commit()
+            path_to_images.append(os.path.join('images', form.name.data, filename))
+        db.session.add(Comics(name='Лига справедливости', path=path_to_images))
+        db.session.commit()
     return render_template('upload.html', form=form)
 
 @main.route('/uploaded', methods=['GET', 'POST'])
 def uploaded():
     page = request.args.get('page', 1, type=int)
-    pagination = Image.query.paginate(page, per_page=1, error_out=False)
+    pagination = Comics.query.filter_by(name='Лига справедливости').paginate(page, per_page=1, error_out=False)
     images = pagination.items
     return render_template('uploaded.html', images=images, pagination=pagination)

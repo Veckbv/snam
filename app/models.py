@@ -6,10 +6,11 @@ from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db, login_manager
 
-class Image(db.Model):
-    __tablename__ = 'images'
+class Comics(db.Model):
+    __tablename__ = 'comics'
     id = db.Column(db.Integer, primary_key=True)
-    path = db.Column(db.String(64))
+    name = db.Column(db.String(64))
+    path = db.Column(db.ARRAY(db.String(64)))
 
 class Permission:
     FOLLOW = 1

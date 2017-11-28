@@ -3,12 +3,15 @@
 
 
 {% block page_content %}
+{{pagination.next_num}}
     <div class="text-center">
         {{macros.pagination_widget(pagination, '.uploaded' )}}
     </div>
     {% for i in images %}
+        {% for x in i.path %}
         <dir>
-            <a href="{{ url_for('.uploaded', page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" class="img-responsive center-block img-rounded"></a>
+            <a href="{{ url_for('.uploaded', page=pagination.next_num) }}"><img src="{{ url_for('static', filename=x) }}" class="img-responsive center-block img-rounded"></a>
         </dir>
+        {% endfor %}
     {% endfor %}
 {% endblock %}
