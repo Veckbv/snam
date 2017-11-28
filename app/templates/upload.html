@@ -6,8 +6,8 @@
 {% block page_content %}
 <form method="POST" enctype="multipart/form-data">
     {{form.hidden_tag()}}
-    {{form.name(autofocus="", class="text-primary", placeholder="Введите название главы")}}
+    {{form.name(autofocus="", placeholder="Введите название главы")}}
     {{form.upload(multiple="")}}
-    {{form.submit(class="text-primary")}}
+    {{form.submit()}}
 </form>
 {% endblock %}

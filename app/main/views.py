@@ -72,18 +72,27 @@ def upload():
     if form.validate_on_submit():
         uploaded_files = request.files.getlist("upload")
         path_to_folder = os.path.join(current_app.root_path, 'static/images', form.name.data)
-        os.mkdir(path_to_folder)
-        for f in uploaded_files:
-            filename = secure_filename(f.filename)
-            f.save(os.path.join(path_to_folder, filename))
-            path = Image(path=os.path.join('images', form.name.data, filename))
-            db.session.add(path)
-            db.session.commit()
+        if not os.path.exists(path_to_folder):
+            os.mkdir(path_to_folder)
+            for f in uploaded_files:
+                filename = secure_filename(f.filename)
+                f.save(os.path.join(path_to_folder, filename))
+                path = Image(name=form.name.data, path=os.path.join('images', form.name.data, filename))
+                db.session.add(path)
+                db.session.commit()
     return render_template('upload.html', form=form)
 
-@main.route('/uploaded', methods=['GET', 'POST'])
+@main.route('/uploaded/', methods=['GET'])
 def uploaded():
     page = request.args.get('page', 1, type=int)
-    pagination = Image.query.paginate(page, per_page=1, error_out=False)
+    pagination = Image.query.filter_by(name='Лига справедливости').paginate(page, per_page=1, error_out=False)
     images = pagination.items
     return render_template('uploaded.html', images=images, pagination=pagination)
+
+
+@main.route('/uploaded/<name>', methods=['GET'])
+def comics(name):
+    page = request.args.get('page', 1, type=int)
+    pagination = Image.query.filter_by(name=name).paginate(page, per_page=1, error_out=False)
+    images = pagination.items
+    return render_template('uploaded.html', images=images, pagination=pagination, name=name)

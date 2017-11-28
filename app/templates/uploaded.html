@@ -8,7 +8,7 @@
     </div>
     {% for i in images %}
         <dir>
-            <a href="{{ url_for('.uploaded', page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" class="img-responsive center-block img-rounded"></a>
+            <a href="{{ url_for('.comics', name=name, page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" class="img-responsive center-block img-rounded"></a>
         </dir>
     {% endfor %}
 {% endblock %}
