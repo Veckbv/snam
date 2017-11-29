@@ -79,7 +79,7 @@ def upload():
                 f.save(os.path.join(path_to_folder, filename))
                 path = Image(name=form.name.data, path=os.path.join('images', form.name.data, filename))
                 db.session.add(path)
-                db.session.commit()
+                db.session.commit()            
     return render_template('upload.html', form=form)
 
 @main.route('/uploaded', methods=['GET', 'POST'])
