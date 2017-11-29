@@ -2,12 +2,33 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 
-
 {% block page_content %}
-<form method="POST" enctype="multipart/form-data">
-    {{form.hidden_tag()}}
-    {{form.name(autofocus="", class="text-primary", placeholder="Введите название главы")}}
-    {{form.upload(multiple="")}}
-    {{form.submit(class="text-primary")}}
-</form>
+<div class="col-md-4"></div>
+<div class="col-md-4">
+    <div class="page-header">
+        <h1>Загрузка</h1>
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+        {{form.hidden_tag()}}
+        <div class="form-group">
+            {{form.comics(class="text-primary form-control input-lg", placeholder="Введите название комикса")}}
+        </div>
+        <div class="form-group">
+            {{form.volume(class="text-primary form-control input-lg", placeholder="Введите номер тома")}}
+        </div>
+        <div class="form-group">
+            {{form.chapter_num(class="text-primary form-control input-lg", placeholder="Введите номер главы")}}
+        </div>
+        <div class="form-group">
+            {{form.chapter_name(class="text-primary form-control input-lg", placeholder="Введите название главы")}}
+        </div>
+        <div class="form-group">
+            {{form.upload(multiple="")}}
+        </div>
+        <div class="form-group">
+            {{form.submit(class="btn btn-primary btn-lg btn-block ")}}
+        </div>
+    </form>
+</div>
+<div class="col-md-4"></div>
 {% endblock %}

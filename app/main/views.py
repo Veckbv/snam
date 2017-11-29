@@ -71,13 +71,17 @@ def upload():
     form = ImageForm()
     if form.validate_on_submit():
         uploaded_files = request.files.getlist("upload")
-        path_to_folder = os.path.join(current_app.root_path, 'static/images', form.name.data)
+        path_to_folder = os.path.join(current_app.root_path, 'static/comics', form.comics.data, form.volume.data, form.chapter_num.data)
         if not os.path.exists(path_to_folder):
-            os.mkdir(path_to_folder)
+            os.makedirs(path_to_folder)
             for f in uploaded_files:
                 filename = secure_filename(f.filename)
                 f.save(os.path.join(path_to_folder, filename))
-                path = Image(name=form.name.data, path=os.path.join('images', form.name.data, filename))
+                path = Image(comics=form.comics.data, 
+                             volume=form.volume.data,
+                             chapter_num=form.chapter_num.data,
+                             chapter_name=form.chapter_name.data,
+                             path=filename)
                 db.session.add(path)
                 db.session.commit()            
     return render_template('upload.html', form=form)
@@ -88,3 +92,9 @@ def uploaded():
     pagination = Image.query.paginate(page, per_page=1, error_out=False)
     images = pagination.items
     return render_template('uploaded.html', images=images, pagination=pagination)
+
+
+@main.route('/hello/')
+@main.route('/hello/<name>')
+def hello(name=None):
+    return render_template('hello.html', name=name)

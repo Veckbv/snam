@@ -11,10 +11,25 @@
     <div class="page-header">
         <h1>Логин</h1>
     </div>
-    {{ wtf.quick_form(form) }}
-    <br>
-    <p>Забыли пароль? <a href="{{ url_for('auth.password_reset_request') }}">Нажмите здесь, чтобы cбросить пароль</a>.</p>
-    <p>Новый пользователь <a href="{{ url_for('auth.register') }}">Нажмите здесь, чтобы зарегистрироваться</a>.</p>
+    <form method="POST">
+        {{form.hidden_tag()}}
+        <div class="form-group input-group">
+            {{form.email(class='form-control input-lg', placeholder="Email")}}
+            <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+        </div>
+        <div class="form-group input-group">
+            {{form.password(class="form-control input-lg", placeholder="Пароль")}}
+            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+        </div>
+        <div class="form-group">
+            <span class="pull-left">Запомнить{{form.remember_me(class="form-control input-lg")}}</span>
+        </div>
+        <div class="form-group">
+            {{form.submit(class="btn btn-primary btn-lg btn-block")}}
+            <span><a href="{{ url_for('auth.password_reset_request') }}">Сброс пароль</a></span>
+            <span class="pull-right"><a href="{{ url_for('auth.register') }}">Регистрация</a></span>
+        </div>
+    </form>
 </div>
 <div class="col-md-4"></div>
 {% endblock %}

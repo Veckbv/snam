@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import StringField, TextAreaField, SelectField, BooleanField, SubmitField
+from wtforms import StringField, TextAreaField, SelectField, BooleanField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from ..models import User, Role
 from wtforms import ValidationError
@@ -8,7 +8,10 @@ from wtforms import ValidationError
 
 
 class ImageForm(FlaskForm):
-    name = StringField('Название', validators=[DataRequired()])
+    comics = StringField('Комикс', validators=[DataRequired()])
+    volume = StringField('Номер тома', validators=[DataRequired()])
+    chapter_num = StringField('Номер главы', validators=[DataRequired()])
+    chapter_name = StringField('Название главы', validators=[DataRequired()])
     upload = FileField('Изображение', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Только изображение!')])
     submit = SubmitField('Отправить')
     

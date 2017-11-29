@@ -9,6 +9,10 @@ from . import db, login_manager
 class Image(db.Model):
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True)
+    comics = db.Column(db.String(64))
+    volume = db.Column(db.String(64))
+    chapter_num = db.Column(db.Integer)
+    chapter_name = db.Column(db.String(64))
     path = db.Column(db.String(64))
 
 class Permission:
