@@ -81,17 +81,19 @@ def upload():
                              volume=form.volume.data,
                              chapter_num=form.chapter_num.data,
                              chapter_name=form.chapter_name.data,
-                             path=filename)
+                             path=os.path.join(path_to_folder.split('static')[1].lstrip('/'), filename))
                 db.session.add(path)
                 db.session.commit()            
     return render_template('upload.html', form=form)
 
+
 @main.route('/uploaded', methods=['GET', 'POST'])
-def uploaded():
+@main.route('/uploaded/<comics>', methods=['GET', 'POST'])
+def uploaded(comics=None):
     page = request.args.get('page', 1, type=int)
-    pagination = Image.query.paginate(page, per_page=1, error_out=False)
+    pagination = Image.query.filter_by(comics=comics).paginate(page, per_page=1, error_out=False)
     images = pagination.items
-    return render_template('uploaded.html', images=images, pagination=pagination)
+    return render_template('uploaded.html', images=images, pagination=pagination, comics=comics)
 
 
 @main.route('/hello/')
