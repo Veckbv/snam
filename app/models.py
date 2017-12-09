@@ -13,7 +13,7 @@ class Image(db.Model):
     volume = db.Column(db.String(64))
     chapter_num = db.Column(db.Integer)
     chapter_name = db.Column(db.String(64))
-    path = db.Column(db.String(64))
+    path = db.Column(db.String(128))
 
 class Permission:
     FOLLOW = 1

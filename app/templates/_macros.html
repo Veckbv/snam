@@ -1,4 +1,4 @@
-{% macro pagination_widget(pagination, endpoint, var) %}
+{% macro pagination_widget(pagination, endpoint, var, var2) %}
 <ul class="pagination">
     <li{% if not pagination.has_prev %} class="disabled"{% endif %}>
         <a href="{% if pagination.has_prev %}{{ url_for(endpoint, page=pagination.page - 1, **kwargs) }}{% else %}#{% endif %}">&laquo;</a>
@@ -7,11 +7,11 @@
         {% if p %}
             {% if p == pagination.page %}
             <li class="active">
-                <a href="{{ url_for(endpoint, comics=var, page = p, **kwargs) }}">{{ p }}</a>
+                <a href="{{ url_for(endpoint, comics=var, ch=var2, page = p, **kwargs) }}">{{ p }}</a>
             </li>
             {% else %}
             <li>
-                <a href="{{ url_for(endpoint, comics=var, page = p, **kwargs) }}">{{ p }}</a>
+                <a href="{{ url_for(endpoint, comics=var, ch=var2, page = p, **kwargs) }}">{{ p }}</a>
             </li>
             {% endif %}
         {% else %}

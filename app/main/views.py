@@ -1,5 +1,5 @@
 import os
-from flask import render_template, redirect, current_app, url_for, request, flash
+from flask import render_template, redirect, current_app, url_for, request, flash, abort, g
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from . import main
@@ -8,9 +8,16 @@ from ..models import User, Role, Image
 from .. import db
 from ..decorators import admin_required
 
+@main.route('/<comics>/<ch>')
+@main.route('/<comics>')
 @main.route('/')
-def index():
-    return render_template('index.html')
+def index(comics=None, ch=None):
+    if comics != None and Image.query.filter_by(comics=comics).first() == None:
+        abort(404)
+    page = request.args.get('page', 1, type=int)
+    pagination = Image.query.filter_by(comics=comics, chapter_num=ch).paginate(page, per_page=1, error_out=False)
+    images = pagination.items
+    return render_template('index.html', images=images, pagination=pagination, comics=comics, ch=ch)
 
 
 
@@ -83,20 +90,6 @@ def upload():
                              chapter_name=form.chapter_name.data,
                              path=os.path.join(path_to_folder.split('static')[1].lstrip('/'), filename))
                 db.session.add(path)
-                db.session.commit()            
+                db.session.commit()
     return render_template('upload.html', form=form)
 
-
-@main.route('/uploaded', methods=['GET', 'POST'])
-@main.route('/uploaded/<comics>', methods=['GET', 'POST'])
-def uploaded(comics=None):
-    page = request.args.get('page', 1, type=int)
-    pagination = Image.query.filter_by(comics=comics).paginate(page, per_page=1, error_out=False)
-    images = pagination.items
-    return render_template('uploaded.html', images=images, pagination=pagination, comics=comics)
-
-
-@main.route('/hello/')
-@main.route('/hello/<name>')
-def hello(name=None):
-    return render_template('hello.html', name=name)
