@@ -7,7 +7,6 @@
 
 {% block head %}
 {{super()}}
-<link rel="stylesheet" href=" {{ url_for('static', filename='styles.css') }}">
 {% endblock %}
 
 {% block page_content %}
@@ -34,7 +33,6 @@
 {% for i in images %}
     <dir>
         <a href="{{ url_for('main.index', comics=comics, ch=ch  , page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" class="img-responsive center-block img-rounded"></a>
-        <!-- <a href="{{ url_for('main.index', comics=comics, page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" class="img-responsive center-block img-rounded"></a> -->
     </dir>
 {% endfor %}
 {% endif %}

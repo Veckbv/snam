@@ -20,7 +20,6 @@ def index(comics=None, ch=None):
     return render_template('index.html', images=images, pagination=pagination, comics=comics, ch=ch)
 
 
-
 @main.route('/user/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
