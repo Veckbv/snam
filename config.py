@@ -5,8 +5,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'kbufktutyl'
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
-	UPLOAD_FOLDER = '/home/ali/myapps/snam/app/static'
-	'''ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])'''
 	MAIL_SERVER = 'smtp.gmail.com'
 	MAIL_PORT = 587
 	MAIL_USE_TLS = True

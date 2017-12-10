@@ -20,22 +20,53 @@
         </div>
       </aside>
     </div>
-{% elif ch == None %}
-  {% for _ in range(0, 10) %}
-  <ul>
-    <li><a href="{{ url_for('main.index', comics='Семь смертных грехов', ch=_) }}">Глава {{_}} : {{images.chapter_name}}</a></li>
-  </ul>
-  {% endfor %}
-{% else %}
-<div class="text-center">
-    {{macros.pagination_widget(pagination, 'main.index', comics, ch )}}
-</div>
-{% for i in images %}
-    <dir>
-        <a href="{{ url_for('main.index', comics=comics, ch=ch  , page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" class="img-responsive center-block img-rounded"></a>
-    </dir>
-{% endfor %}
-{% endif %}
+  {% elif ch == None %} 
+
+  <!-- <table class="table table-bordered table-hover"> 
+    {% for _ in range(0, 10) %}
+    <tr>
+      <td>
+        <a class="btn btn-md" href="{{ url_for('main.index', comics='Семь смертных грехов', ch=_) }}">Глава {{_}} : {{name_chapter[_]}}</a>  
+      </td>
+    </tr>
+    {% endfor %}
+  </table> -->
+<!-- 
+  <ul class="nav nav-pills">
+    <li class="dropdown">
+      <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+        Главы 
+        <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+        {% for _ in range(0, name_chapter|length) %}
+          <li><a href="{{ url_for('main.index', manga='Семь смертных грехов', ch=_) }}">Глава {{_}} : {{name_chapter[_]}}</a></li>
+          <li class="divider"></li>
+        {% endfor %}
+      </ul>
+    </li>
+  </ul> -->
+
+  <div class="btn-group">
+    <a class="btn btn-lg dropdown-toggle" data-toggle="dropdown" href="#">Главы<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+      {% for _ in range(0, name_chapter|length) %}
+        <li><a href="{{ url_for('main.index', comics='Семь смертных грехов', ch=_) }}">Глава {{_}} : {{name_chapter[_]}}</a></li>
+        <li class="divider"></li>      
+      {% endfor %}
+    </ul>
+  </div>
+  
+  {% else %}
+    <div class="text-center">
+      {{macros.pagination_widget(pagination, 'main.index', comics, ch )}}
+    </div>
+    {% for i in images %}
+      <dir>
+        <a href="{{ url_for('main.index', comics=comics, ch=ch, page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" title="{{i.path}}" class="img-responsive center-block img-rounded"></a>
+      </dir>
+    {% endfor %}
+  {% endif %}
 {% endblock %}
 
 

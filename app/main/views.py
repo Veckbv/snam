@@ -17,8 +17,15 @@ def index(comics=None, ch=None):
     page = request.args.get('page', 1, type=int)
     pagination = Image.query.filter_by(comics=comics, chapter_num=ch).paginate(page, per_page=1, error_out=False)
     images = pagination.items
-    return render_template('index.html', images=images, pagination=pagination, comics=comics, ch=ch)
-
+    # Для получения названия главы в '/<comics>
+    for_name_chapter = Image.query.filter_by(comics=comics).order_by(Image.chapter_num).all() 
+    name_chapter = []
+    for i in range(0, len(for_name_chapter)):
+        if for_name_chapter[i].chapter_name in name_chapter:
+            pass
+        else:
+            name_chapter.append(for_name_chapter[i].chapter_name)
+    return render_template('index.html', images=images, pagination=pagination, comics=comics, ch=ch, name_chapter=name_chapter)
 
 @main.route('/user/<username>')
 def user(username):
@@ -77,7 +84,7 @@ def upload():
     form = ImageForm()
     if form.validate_on_submit():
         uploaded_files = request.files.getlist("upload")
-        path_to_folder = os.path.join(current_app.root_path, 'static/comics', form.comics.data, form.volume.data, form.chapter_num.data)
+        path_to_folder = os.path.join(current_app.instance_path, 'manga/comics', form.comics.data, form.volume.data, form.chapter_num.data)
         if not os.path.exists(path_to_folder):
             os.makedirs(path_to_folder)
             for f in uploaded_files:
@@ -87,7 +94,7 @@ def upload():
                              volume=form.volume.data,
                              chapter_num=form.chapter_num.data,
                              chapter_name=form.chapter_name.data,
-                             path=os.path.join(path_to_folder.split('static')[1].lstrip('/'), filename))
+                             path=os.path.join(path_to_folder.split('snam.ru')[1].lstrip('/'), filename))
                 db.session.add(path)
                 db.session.commit()
     return render_template('upload.html', form=form)
