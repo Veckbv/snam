@@ -18,7 +18,7 @@ class Image(db.Model):
     chapter_page = db.Column(db.Integer)
     path = db.Column(db.String(128))
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref="image", lazy="dynamic")
+
 
 class Permission:
     FOLLOW = 1
@@ -36,7 +36,9 @@ class Comment(db.Model):
     timestamp = db.Column(db.DateTime(), default=datetime.utcnow, index=True)
     disabled = db.Column(db.Boolean)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User', backref='comments')
     image_id = db.Column(db.Integer, db.ForeignKey('images.id'))
+    image = db.relationship('Image', backref="comments")
     
 
     @staticmethod
@@ -117,7 +119,7 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash = db.Column(db.String(32))
     images = db.relationship('Image', backref='author', lazy='dynamic')
-    comments = db.relationship('Comment', backref='author', lazy='dynamic')
+
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -215,6 +217,8 @@ class User(UserMixin, db.Model):
         hash = self.avatar_hash or self.gravatar_hash()
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(url=url, hash=hash, size=size, default=default, rating=rating)
 
+    def __repr__(self):
+        return f'<User({self.email},{self.username})>'
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
