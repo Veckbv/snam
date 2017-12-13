@@ -4,20 +4,19 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, request, url_for
 from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
-from markdown import markdown
-import bleach
 from . import db, login_manager
 
 class Image(db.Model):
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True)
-    comics = db.Column(db.String(64))
+    Image = db.Column(db.String(64))
     volume = db.Column(db.String(64))
     chapter_num = db.Column(db.Integer)
     chapter_name = db.Column(db.String(64))
     chapter_page = db.Column(db.Integer)
     path = db.Column(db.String(128))
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    comment = db.relationship('Comment', backref="images", lazy="dynamic")
 
 
 class Permission:
@@ -36,18 +35,8 @@ class Comment(db.Model):
     timestamp = db.Column(db.DateTime(), default=datetime.utcnow, index=True)
     disabled = db.Column(db.Boolean)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship('User', backref='comments')
     image_id = db.Column(db.Integer, db.ForeignKey('images.id'))
-    image = db.relationship('Image', backref="comments")
-    
-
-    @staticmethod
-    def on_changed_body(target, value, oldvalue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i', 'strong']
-        target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html'), 
-                           tags=allowed_tags, strip=True))
-                    
-db.event.listen(Comment.body, 'set', Comment.on_changed_body)
+  
     
 
 
@@ -119,6 +108,7 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash = db.Column(db.String(32))
     images = db.relationship('Image', backref='author', lazy='dynamic')
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
 
     def __init__(self, **kwargs):
