@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
 {% block title %}
@@ -7,6 +8,7 @@
 
 {% block head %}
 {{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 {% endblock %}
 
 {% block page_content %}
@@ -58,15 +60,66 @@
   </div>
   
   {% else %}
-    <div class="text-center">
-      {{macros.pagination_widget(pagination, 'main.index', comics, ch )}}
+  <div class="text-center">
+    {{macros.pagination_widget(pagination, 'main.index', comics, ch )}}
+  </div>
+  {% for i in images %}
+    <div>
+      <a href="{{ url_for('main.index', comics=comics, ch=ch, page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" title="{{i.path}}" class="img-responsive center-block img-rounded"></a>
     </div>
-    {% for i in images %}
-      <dir>
-        <a href="{{ url_for('main.index', comics=comics, ch=ch, page=pagination.next_num) }}"><img src="{{ url_for('static', filename=i.path) }}" title="{{i.path}}" class="img-responsive center-block img-rounded"></a>
-      </dir>
-    {% endfor %}
+
+    <div>
+      {% if current_user.can(Permission.WRITE) %}
+        {{wtf.quick_form(comment_form)}}
+      {% endif %}
+    </div>
+    <ul>
+      {% for comment in comments %}
+      <li>
+        <div>
+          {{ moment(comment.timestamp).fromNow()}}
+        </div>
+        <div>
+          <a href=" {{url_for('.user', username=comment.author.username) }}">
+            {{comment.author.username}}
+          </a>
+        </div>
+        <div>
+          {{comment.body}}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+
+
+  <div class="container pb-cmnt-container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-info">
+                <div class="panel-body">
+                    <form class="form-inline" method="POST">
+                      {{comment_form.body()}}
+                      {{comment_form.submit()}}
+                    <textarea placeholder="Write your comment here!" class="pb-cmnt-textarea"></textarea>
+                    <form class="form-inline">
+                        <div class="btn-group">
+                          <button class="btn" type="button"><span class="fa fa-picture-o fa-lg"></span></button>
+                            <button class="btn" type="button"><span class="fa fa-video-camera fa-lg"></span></button>
+                            <button class="btn" type="button"><span class="fa fa-microphone fa-lg"></span></button>
+                            <button class="btn" type="button"><span class="fa fa-music fa-lg"></span></button>
+                        </div>
+                        <button class="btn btn-primary pull-right" type="button">Share</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
   {% endif %}
 {% endblock %}
 
-
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown()}}
+{% endblock %}

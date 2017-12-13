@@ -3,7 +3,7 @@ from flask_migrate import Migrate, MigrateCommand
 from app import create_app, db
 from app.models import Image
 
-app = create_app('default')
+app = create_app('testing')
 manage = Manager(app)
 migrate = Migrate(app, db)
 

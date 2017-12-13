@@ -3,21 +3,32 @@ from flask import render_template, redirect, current_app, url_for, request, flas
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from . import main
-from .forms import ImageForm, EditProfileForm ,EditProfileAdminForm
-from ..models import User, Role, Image
+from .forms import ImageForm, EditProfileForm ,EditProfileAdminForm, CommentForm
+from ..models import User, Role, Image, Comment, Permission
 from .. import db
 from ..decorators import admin_required
 
-@main.route('/<comics>/<ch>')
+@main.route('/<comics>/<ch>', methods=['GET', 'POST'])
 @main.route('/<comics>')
 @main.route('/')
 def index(comics=None, ch=None):
     if comics != None and Image.query.filter_by(comics=comics).first() == None:
         abort(404)
+    #Получшение картинок и распределение их по страницам
     page = request.args.get('page', 1, type=int)
     pagination = Image.query.filter_by(comics=comics, chapter_num=ch).paginate(page, per_page=1, error_out=False)
     images = pagination.items
-    # Для получения названия главы в '/<comics>
+    #Комментарии под каждой страницей
+    comment_form = CommentForm()
+    if current_user.can(Permission.WRITE) and comment_form.validate_on_submit():
+        for i in images:
+            comment = Comment(body=comment_form.body.data, author=current_user._get_current_object(),
+                              image=Image.query.filter_by(id=i.id).first())
+            db.session.add(comment)
+            db.session.commit()
+    comments = Comment.query.filter_by().order_by(Comment.timestamp.desc()).all()
+
+    # Получение название глав в '/<comics>
     for_name_chapter = Image.query.filter_by(comics=comics).order_by(Image.chapter_num).all() 
     name_chapter = []
     for i in range(0, len(for_name_chapter)):
@@ -25,7 +36,11 @@ def index(comics=None, ch=None):
             pass
         else:
             name_chapter.append(for_name_chapter[i].chapter_name)
-    return render_template('index.html', images=images, pagination=pagination, comics=comics, ch=ch, name_chapter=name_chapter)
+    return render_template('index.html', images=images, pagination=pagination, comics=comics, ch=ch, 
+                            name_chapter=name_chapter, comment_form=comment_form, comments=comments, 
+                            Permission=Permission)
+
+
 
 @main.route('/user/<username>')
 def user(username):
@@ -94,7 +109,8 @@ def upload():
                              volume=form.volume.data,
                              chapter_num=form.chapter_num.data,
                              chapter_name=form.chapter_name.data,
-                             path=os.path.join(path_to_folder.split('snam.ru')[1].lstrip('/'), filename))
+                             path=os.path.join(path_to_folder.split('snam.ru')[1].lstrip('/'), filename),
+                             author=current_user._get_current_object())
                 db.session.add(path)
                 db.session.commit()
     return render_template('upload.html', form=form)

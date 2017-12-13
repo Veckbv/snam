@@ -2,8 +2,9 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, TextAreaField, SelectField, BooleanField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, Regexp
-from ..models import User, Role
 from wtforms import ValidationError
+from flask_pagedown.fields import PageDownField
+from ..models import User, Role
 
 
 
@@ -14,8 +15,12 @@ class ImageForm(FlaskForm):
     chapter_name = StringField('Название главы', validators=[DataRequired()])
     upload = FileField('Изображение', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Только изображение!')])
     submit = SubmitField('Отправить')
-    
 
+class CommentForm(FlaskForm):
+    body = PageDownField('Напишите комментарий', validators=[DataRequired()])
+    submit = SubmitField('Отправить')
+
+    
 class EditProfileForm(FlaskForm):
     name = StringField('Настоящее имя', validators=[Length(0, 64)])
     location = StringField('Дислокация', validators=[Length(0, 64)])
